@@ -1,8 +1,8 @@
-class Event < ActiveRecord::Base
+# class Event < ActiveRecord::Base
   
   has_many :data_templates, :dependent => :destroy
   has_many :status_exceptions, :dependent => :destroy
-  user_stampable  
+  # user_stampable  
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
   

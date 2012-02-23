@@ -6,7 +6,7 @@ class Contact < ActiveRecord::Base
   # make sure you have an :int column named delete in your model
   is_soft_deletable
 
-  user_stampable
+  # user_stampable
   
   has_many :suppliers, :through => :supplier_contacts
   has_many :data_templates, :through => :data_template_contacts

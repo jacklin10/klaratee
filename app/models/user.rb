@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   has_many :groups, :through => :user_groups
   has_many :user_products
   has_many :products, :through => :user_products
-  user_stampable :stamper_class_name => :user
+  # user_stampable :stamper_class_name => :user
   
   # the join_table has to be specified here. obviously we want to set this from a yaml variable or ENV
   # before going to production.  This is one of the quirks of using multiple DB's.  The habtm join table

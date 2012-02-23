@@ -1,7 +1,7 @@
 class SupplierDoc < ActiveRecord::Base
   
   belongs_to :supplier
-  user_stampable
+  # user_stampable
   
   has_attachment :storage => :file_system, 
                  :max_size => 500.megabytes,

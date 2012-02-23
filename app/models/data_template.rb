@@ -16,7 +16,7 @@ class DataTemplate < ActiveRecord::Base
   validates_associated :event, :message => ": None Selected"
   validates_uniqueness_of :name, :scope=>[:event_id], :message =>"must be unique for an event.", :case_sensitive => false
   
-  user_stampable
+  # user_stampable
   
   # Convert column names into a sha1 hash key for security.
   # Prevents database column names from appearing in the url

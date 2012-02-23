@@ -9,6 +9,6 @@ class Company < ActiveRecord::Base
   establish_connection RAILS_ENV
   
   has_and_belongs_to_many :users
-  user_stampable :stamper_class_name => :user
+  # user_stampable :stamper_class_name => :user
   
 end

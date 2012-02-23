@@ -4,7 +4,7 @@ class Item < ActiveRecord::Base
   belongs_to :data_template
   has_many :item_values, :dependent => :destroy
   has_many :data_template_columns, :through => :item_values
-  user_stampable 
+  # user_stampable 
 
   # System columns for items and master items screens
   SYSTEM_COLS = ['created_by',
