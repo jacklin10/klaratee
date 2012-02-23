@@ -90,9 +90,11 @@ module EventAware
     #     Buyer reopens that event.  The supplier logs in but he is still unable to import items 
     #     because the import link is only available when an event is open.
     #     If you call this method after updating the event then the supplier will have the correct event data when he needs it. 
+ 
     REDIS.keys("selected_event*").each do |key|
       REDIS.set(key,Marshal.dump(event))
     end
+    
   end
   
   # The visibilty doesn't make all that much difference since this is a module ( unless you mix it in to something and 
@@ -160,22 +162,22 @@ module EventAware
   def load_event_from_redis
     # Objects are saved in redis as binary strings (@see update_redis) so we need to 
     # Marshal.load to reassemble the objects.  
-    Marshal.load(REDIS["selected_event_#{key_suffix}"]) rescue nil
+    # Marshal.load(REDIS["selected_event_#{key_suffix}"]) rescue nil
   end
   
   # retrieve the selected data template stored in redis.
   def load_template_from_redis
-    Marshal.load(REDIS["selected_template_#{key_suffix}"]) rescue nil  
+    # Marshal.load(REDIS["selected_template_#{key_suffix}"]) rescue nil  
   end
   
   def save_event(event)
-    REDIS["selected_event_#{key_suffix}"]=Marshal.dump(event)
-    REDIS.expire "selected_event_#{key_suffix}", 1.week
+    # REDIS["selected_event_#{key_suffix}"]=Marshal.dump(event)
+    # REDIS.expire "selected_event_#{key_suffix}", 1.week
   end
   
   def save_data_template(data_template)
-    REDIS["selected_template_#{key_suffix}"]=Marshal.dump(data_template)
-    REDIS.expire "selected_template_#{key_suffix}", 1.week
+    # REDIS["selected_template_#{key_suffix}"]=Marshal.dump(data_template)
+    # REDIS.expire "selected_template_#{key_suffix}", 1.week
   end
   
   # When saving objects to redis you need to Marshal the object first.

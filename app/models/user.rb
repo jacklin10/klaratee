@@ -132,7 +132,9 @@ class User < ActiveRecord::Base
   def self.authenticate(login, password)
     
     # ActiveRecord::Base.establish_connection( ENV["RAILS_ENV"] ) # Original code.
+    puts "login: #{login} pass: #{password} "
     u = User.find(  :first, :conditions => [ "login = ? AND state = 'active'", login ]  )    
+    puts "*** User authenticated? #{u} "
     !u.nil? && u.authenticated?(password) ? u : nil
   end
   
@@ -147,6 +149,7 @@ class User < ActiveRecord::Base
   end
   
   def authenticated?(password)
+    puts "\n *** authenticated? ** \n"
     crypted_password == encrypt(password)
   end
   

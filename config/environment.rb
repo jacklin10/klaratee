@@ -31,8 +31,6 @@ Rails::Initializer.run do |config|
   config.gem "declarative_authorization"
   config.gem "ar-extensions"
   config.gem 'will_paginate', :version => '~> 2.3.12', :source => 'http://gemcutter.org'
-  config.gem 'redis', :version => "2.0.10"
-  config.gem "redis-store" ,  :version => "1.0.0.beta3"
   
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named

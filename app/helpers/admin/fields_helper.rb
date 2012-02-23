@@ -1,7 +1,4 @@
 module Admin::FieldsHelper
-  
-puts "xxxxxxxxx"
-
   # Return array of dynamic attributes for the given model
   # example:
   #  dump_dynamo_attributes('Supplier')

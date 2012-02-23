@@ -29,9 +29,6 @@ GEM
       activesupport (= 2.3.8)
       rake (>= 0.8.3)
     rake (0.8.7)
-    redis (2.2.2)
-    redis-store (1.0.0.1)
-      redis (~> 2.2.1)
     will_paginate (2.3.16)
 
 PLATFORMS
@@ -47,6 +44,4 @@ DEPENDENCIES
   mysql
   rails (= 2.3.8)
   rake (= 0.8.7)
-  redis
-  redis-store
   will_paginate (~> 2.3.16)

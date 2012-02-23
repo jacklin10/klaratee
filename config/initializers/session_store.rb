@@ -14,7 +14,3 @@ ActionController::Base.session = {
 # which shouldn't be used to store highly confidential information
 # (create the session table with "rake db:sessions:create")
 # ActionController::Base.session_store = :active_record_store
-
-# We are using redis for the session store through the use of  the redis-store gem 
-# http://github.com/jodosha/redis-store
-ActionController::Base.session_store = :redis_session_store

@@ -22,8 +22,14 @@ class SessionsController < ApplicationController
   
   def create
     self.current_user = User.authenticate(params[:login], params[:password])
+    puts "\n *** 1 *** \n"
     @company_in_view = session[:company_in_view]
+    puts "\n *** 2 #{@company_in_view} \n"
+
     if logged_in?
+
+      puts "\n *** IS LOGGED IN **** \n"
+
       if params[:remember_me] == "1"
         current_user.remember_me unless current_user.remember_token?
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
@@ -49,6 +55,8 @@ class SessionsController < ApplicationController
       # redirect to landing action, which dynamically determines a user's landing page
       redirect_back_or_default('/landing')
     else
+
+      puts "\n *** 3 *** \n"
       flash.now[:notice] = "Invalid username / password combination."
       render :action => 'new'
     end

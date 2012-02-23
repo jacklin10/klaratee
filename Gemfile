@@ -1,6 +1,5 @@
 source :gemcutter
 gem "rails", "2.3.8"
-# gem "sqlite3-ruby", :require => "sqlite3"
 gem "mysql"
 
 gem 'rake',  '0.8.7'
@@ -9,8 +8,6 @@ gem 'ar-extensions'
 gem 'declarative_authorization'
 gem 'enumerated_attribute'
 gem 'meta_programming'
-gem 'redis'
-gem 'redis-store'
 gem 'will_paginate', '~> 2.3.16'
 gem 'i18n'
 
