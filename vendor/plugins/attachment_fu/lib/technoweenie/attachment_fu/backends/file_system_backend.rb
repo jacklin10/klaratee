@@ -1,4 +1,3 @@
-# require 'ftools'
 require 'fileutils'
 
 module Technoweenie # :nodoc:

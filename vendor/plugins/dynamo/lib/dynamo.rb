@@ -1,6 +1,7 @@
 module Dynamo
   
   include DynamoHelper
+  
   # map types to those contained in the db. Avoids any name collisions using names like string and float.
   VALID_FIELD_TYPES = {:Text => 'val_string', :Number=>'val_int', :Decimal=>'val_float'}
   
@@ -14,6 +15,7 @@ module Dynamo
     def has_dynamic_attributes(*attrs)
       
       include InstanceMethods
+      
       # Create access/mutator for this new field
       self.class_eval do
         
@@ -32,20 +34,6 @@ module Dynamo
         # 'without' method, but for dynamic attributes we need to do some extra stuff so we use the 'with' method.
         attr_accessor :dynamo_cache
         attr_accessor :dynamo_field_value_cache
-        
-        # If you call dynamo using: has_dynamic_attributes(true) 
-        # Then the dynamo_fields and dyanmo_field_values will apply soft_deletable also.
-        write_inheritable_attribute :use_soft_delete?, attrs[0] || false
-        class_inheritable_reader    :use_soft_delete?
-        
-        if self.use_soft_delete?
-          DynamoField.class_eval do
-            is_soft_deletable
-          end
-          DynamoFieldValue.class_eval do
-            is_soft_deletable
-          end
-        end
         
         # Make sure the methods haven't been built already
         unless method_defined? :method_missing_without_dynamo
@@ -82,10 +70,7 @@ module Dynamo
       raise ArgumentError, "Invalid field type given: #{field_type}. Valid types are: #{VALID_FIELD_TYPES.keys.join(',')}" unless VALID_FIELD_TYPES.has_key? field_type.to_sym
       
       # Create and save this new dynamic field.
-      dynamo_field = DynamoField.new(:model=>self.to_s, :field_name=>field_name, :field_type=>VALID_FIELD_TYPES[field_type.to_sym])
-      dynamo_field.save
-      # Return the actual model. The user can mine errors or do whatever after the save.
-      dynamo_field
+      DynamoField.new(:model=>self.to_s, :field_name=>field_name, :field_type=>VALID_FIELD_TYPES[field_type.to_sym]).save!
     end
     
     # Remove the given field from the DynamoField model.
@@ -95,7 +80,10 @@ module Dynamo
     #  Supplier.remove_dynamo_field(:zzzz)
     #  Supplier.remove_dynamo_field('zzzz')
     def remove_dynamo_field(field_name)
-      DynamoField.find(:all, :conditions=>{:model=>self.to_s, :field_name=>field_name.to_s}).each{|object| object.destroy}
+      field_name = field_name.to_s
+      logger.debug "Dynamo: remove_dynamo field  Name: #{field_name}"
+      # NOTE: Delete doesn't fire callbacks like before_destroy, after_destroy, but its faster.
+      logger.warn "Attempted to delete non-existing field: #{self.to_s}:#{field_name}" if DynamoField.delete_all(:field_name=>field_name) == 0
     end
     
     # List all the dynamo fields available to this class.
@@ -211,10 +199,10 @@ module Dynamo
     # Ensure the dynamo_field_values that are associated with this model
     # are removed after the model itself has been deleted
     def cleanup_after_destroy
-      DynamoFieldValue.find(:all, :conditions =>{:model_id=>self.id}).each { |object| object.destroy }
+      ActiveRecord::Base.connection.execute("DELETE FROM dynamo_field_values WHERE model_id = #{self.id}")
     end
     
-    # Builds one section of a bulk insert statment.
+    # Builds one section of a bulk insert statment. 
     # Returns a string like: ('val1', 'val2', 3)
     # So its meant to be plugged in to a block insert statment.
     def build_insert_stmt(dynamo_field_value)
@@ -227,7 +215,7 @@ module Dynamo
         temp_val = "NULL" if temp_val.nil?
         values << temp_val
       end
-         "(#{values.join(',')})"
+      "(#{values.join(',')})"
     end
     
     # We need the id of this model to link it to the value.  That id doesn't exist until
@@ -245,30 +233,29 @@ module Dynamo
       @all_fields_and_values.each do |fv|
         # If count is 0 it means that no dynamo_field_values exist for this model so its brand new.
         if count == 0
-          dfv = DynamoFieldValue.new(:dynamo_field_id=>fv[:dynamo_field].id, :model_id=>self.id, :created_at=>Time.now, :updated_at=>Time.now, "#{fv[:dynamo_field].field_type}".to_sym => fv[:value])
+            dfv = DynamoFieldValue.new(:dynamo_field_id=>fv[:dynamo_field].id, :model_id=>self.id, :created_at=>Time.now, :updated_at=>Time.now, "#{fv[:dynamo_field].field_type}".to_sym => fv[:value])
           all_values << build_insert_stmt(dfv)
         else
           # This is an existing set of values so we need to update.
           # Update is slower because we need to get the dynamo_field_values for this field so its extra queries
-          df_values = fv[:dynamo_field].dynamo_field_values
-          if df_values.blank?
-            # This field had no values yet so we need to add them.
+          dfv = fv[:dynamo_field].dynamo_field_values
+          if dfv.blank?
             dfv = DynamoFieldValue.new(:dynamo_field_id=>fv[:dynamo_field].id, :model_id=>self.id, :created_at=>Time.now, :updated_at=>Time.now, "#{fv[:dynamo_field].field_type}".to_sym => fv[:value])
             all_values << build_insert_stmt(dfv)
             # If you don't clear the cache a second save on this instance won't see the newly created dynamo_field_value and it will insert it again.
             self.dynamo_cache=nil
           else
             # Find the dynamo_field_value we want to update.
-            dfv = df_values.detect{|dyn_field_value| dyn_field_value.model_id == self.id}
+            dfv = dfv.detect{|dyn_field_value| dyn_field_value.model_id == self.id}
             dfv.send("#{fv[:dynamo_field].field_type}=", fv[:value])
             dfv.save!
           end
         end
+        
+        # Reset this now that we have processed all the insert / updates needed.  If you don't 
+        # a double call to save could produce unexpected results.
+        @all_fields_and_values = nil
       end
-      
-      # Reset this now that we have processed all the insert / updates needed.  If you don't
-      # a double call to save could produce unexpected results.
-      @all_fields_and_values = nil
       
       return if all_values.empty?
       
