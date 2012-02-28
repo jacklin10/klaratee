@@ -1,6 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    RedCloth (4.2.9)
     actionmailer (2.3.8)
       actionpack (= 2.3.8)
     actionpack (2.3.8)
@@ -29,12 +30,16 @@ GEM
       activesupport (= 2.3.8)
       rake (>= 0.8.3)
     rake (0.8.7)
+    ruby-ole (1.2.11.2)
+    spreadsheet (0.6.8)
+      ruby-ole (>= 1.0)
     will_paginate (2.3.16)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth
   ar-extensions
   declarative_authorization
   enumerated_attribute
@@ -44,4 +49,5 @@ DEPENDENCIES
   mysql
   rails (= 2.3.8)
   rake (= 0.8.7)
+  spreadsheet
   will_paginate (~> 2.3.16)

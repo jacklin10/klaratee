@@ -10,6 +10,8 @@ gem 'enumerated_attribute'
 gem 'meta_programming'
 gem 'will_paginate', '~> 2.3.16'
 gem 'i18n'
+gem 'spreadsheet'
+gem 'RedCloth'
 
 # If you see: uninitialized constant ActionView::Helpers::JavaScriptElementProxy::ActionView
 # Try to install as a plugin
