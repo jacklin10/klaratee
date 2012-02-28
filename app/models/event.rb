@@ -1,8 +1,9 @@
-# class Event < ActiveRecord::Base
+class Event < ActiveRecord::Base
   
   has_many :data_templates, :dependent => :destroy
   has_many :status_exceptions, :dependent => :destroy
   # user_stampable  
+  
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
   
@@ -52,8 +53,6 @@
        delete_se = existing_se_uids - uidarray   # these users' exceptions must be deleted
        add_se = uidarray - existing_se_uids      # these are newly added exceptions
        
-#       logger.info status.to_s + ":___exist: " + existing_se_uids.to_json + " __ del:" + delete_se.to_json + "||| add: " + add_se.to_json
-       
        # delete exceptions that existed, but were removed with this form submission
        existing_se.each do |s|
          s.delete if delete_se.include?(s.aux_user_id)
@@ -68,9 +67,7 @@
   end
   
   def inv_users_ids
-    Contact.find(:all, :joins => {:data_templates => :event}, 
-                       :conditions => ["events.id = ?", self.id],
-                       :select => "contacts.user_id").map {|c| c.user_id}
+    Contact.find(:all, :joins => {:data_templates => :event}, :conditions => ["events.id = ?", self.id], :select => "contacts.user_id").map {|c| c.user_id}
   end
   
 end

@@ -14,8 +14,7 @@ class ApplicationController < ActionController::Base
   
   filter_parameter_logging :password # Scrub sensitive parameters from your log
   
-  user_stamp Contact, DataTemplate, DataTemplateColumn, Item, Event, Supplier, SupplierDoc,
-  SupplierContact, SupplierNote, Company, Role, User  
+  # user_stamp Contact, DataTemplate, DataTemplateColumn, Item, Event, Supplier, SupplierDoc, SupplierContact, SupplierNote, Company, Role, User  
   
   # Comment out the following line to enable access control
   Authorization.ignore_access_control(false) 

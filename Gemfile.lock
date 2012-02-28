@@ -30,7 +30,7 @@ GEM
       activesupport (= 2.3.8)
       rake (>= 0.8.3)
     rake (0.8.7)
-    ruby-ole (1.2.11.2)
+    ruby-ole (1.2.11.3)
     spreadsheet (0.6.8)
       ruby-ole (>= 1.0)
     will_paginate (2.3.16)
