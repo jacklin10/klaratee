@@ -37,25 +37,21 @@ module EventAware
     data_template_id = params[:selected_data_template][:id] rescue nil
     
     if event_id.nil? && data_template_id.nil?
-      #puts "## nothing changed"
       # Change nothing because no params were passed(form submission didn't come from event or template change form )
       @selected_event = load_event_from_redis
       @selected_data_template = load_template_from_redis
+
     elsif event_changed?(event_id)
-      #puts "## event changed"
       # User has made a change to the event selected. 
       event_changes(event_id)
     elsif data_template_id.nil?
-      #puts "## template null"
       # handle case of switching from page with both selectors to just event selector - only load event
       @selected_event = load_event_from_redis
       @selected_data_template = load_template_from_redis
     elsif data_template_changed?(data_template_id)
-      #puts "## template changed"
       # User has made a change to the data template list
       data_template_changes(data_template_id)
     else
-      #puts "## fallback"
       # handle case of query string only, no changes
       @selected_event = load_event_from_redis
       @selected_data_template = load_template_from_redis
@@ -163,28 +159,34 @@ module EventAware
     # Objects are saved in redis as binary strings (@see update_redis) so we need to 
     # Marshal.load to reassemble the objects.  
     # Marshal.load(REDIS["selected_event_#{key_suffix}"]) rescue nil
+    Event.find_by_id(cookies[:event])
   end
   
   # retrieve the selected data template stored in redis.
   def load_template_from_redis
     # Marshal.load(REDIS["selected_template_#{key_suffix}"]) rescue nil  
+    DataTemplate.find_by_id(cookies[:template])
   end
   
   def save_event(event)
     # REDIS["selected_event_#{key_suffix}"]=Marshal.dump(event)
     # REDIS.expire "selected_event_#{key_suffix}", 1.week
+    cookies.permanent[:event] = event.id
   end
   
   def save_data_template(data_template)
     # REDIS["selected_template_#{key_suffix}"]=Marshal.dump(data_template)
     # REDIS.expire "selected_template_#{key_suffix}", 1.week
+    cookies.permanent[:template] = template.id
   end
   
   # When saving objects to redis you need to Marshal the object first.
   # This converts it to a binary string that can later be reassembled into the proper object.
   def update_redis(event, data_template)
-    save_event(event)
-    save_data_template(data_template)
+    # save_event(event)
+    # save_data_template(data_template)
+    cookies[:event] = event.id unless event.nil?
+    cookies[:template] = data_template.id unless data_template.nil? 
   end
   
   # Adds the current user's id to the key as well as the current company.
