@@ -1,0 +1,35 @@
+<div class="heading">
+  <% form_for :event, :url => {:action => "index" }, :html => { :method => 'get' } do |f| %>
+    <div class="chromestyle" id="chromemenu">
+      <ul>
+        <li class="custom">
+          Event: <%= collection_select(:selected_event, :id, @ea_events, :id, :name, options={:include_blank => "Show all"}, {:onchange => 'this.form.submit()'}) %>
+          Templates: <%= collection_select(:selected_data_template, :id, @ea_data_templates, :id, :name, options={:include_blank => "Select a Template"}, {:onchange => 'this.form.submit()'}) %>
+        </li>
+        <% if (! @selected_event.nil? && ! @selected_event.id.nil?) && (! @selected_data_template.nil? && @selected_data_template.data_template_columns.size > 0) %>
+        <li>
+          <a href="#" rel="dropmenu1"><img src="images/excel_btn.gif"/> Item Sheet</a>
+        </li>
+        <% end %>
+        <% if ! @selected_event.nil? && ! @selected_event.id.nil? %>
+          <% if has_role?(Role::BUYER.to_sym) || has_role?(Role::ADMIN.to_sym) %>       
+            <li>
+              <%= link_to "<img src='images/master_items.png' /> Master Items", {:controller => 'master_items' , :action => 'index'}, {:title => "Show Master Items (All Templates Merged)"} %>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+    <% if ! @selected_event.nil? && ! @selected_event.id.nil? %>
+      <% if ! @selected_data_template.nil? && @selected_data_template.data_template_columns.size > 0 %>
+        <div id="dropmenu1" class="dropmenudiv" style="width: 150px;">
+          <%= link_to "<img src='images/arrow_down.png' /> Export", {:controller => 'download' , :action => 'template_items_xls', :data_template_id => @selected_data_template.id, :params => {:show_item_audit => params[:show_item_audit]}}, {:title => "Export Template Items to MS Excel File"} %>
+          <% if @obj[:items_editable] %>
+            <%= link_to_function( "<img src='images/arrow_up.png' /> Import", "$('#upload').toggle()", :title => "Import Template Items in MS Excel format") %>
+            <%= link_to "<img src='images/date_magnify.png' /> Import History", {:controller => 'upload', :action => 'index'}, {:title => "View statistics and errors from previous item sheet uploads"} %>
+          <% end %>
+        </div>
+      <% end %>     
+    <% end %>
+  <% end  %>
+</div>

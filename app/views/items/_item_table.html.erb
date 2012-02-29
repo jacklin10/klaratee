@@ -1,0 +1,67 @@
+  <div class="digg_pagination">
+    <div class="page_info">
+      <%= page_entries_info @items, :entry_name => 'template item' %>
+    </div>
+    <%= will_paginate @items, :container => false, :params => { :selected_event => {:id => @selected_event.id}, :selected_data_template => {:id => @selected_data_template.id} } %>
+  </div>
+
+  <% if has_role?(Role::BUYER.to_sym) || has_role?(Role::ADMIN.to_sym) %>
+    <div style="margin-bottom: 3px">
+      <% if params[:show_item_audit].nil? || params[:show_item_audit] == 'no' %>
+        <%= link_to '(Show item audit information)', {:overwrite_params => {:show_item_audit => 'yes', :selected_event => {:id => @selected_event.id}, :selected_data_template => {:id => @selected_data_template.id}}} %>   
+      <% else %>
+        <%= link_to '(Hide item audit information)', {:overwrite_params => {:show_item_audit => 'no', :selected_event => {:id => @selected_event.id}, :selected_data_template => {:id => @selected_data_template.id}}} %>      
+      <% end %>
+    </div>
+  <% end %>
+
+<table width="100%" cellspacing="0" cellpadding="0" id="items-list">
+  <tr>
+    <% if (has_role?(Role::BUYER.to_sym) || has_role?(Role::ADMIN.to_sym)) && (! params[:show_item_audit].nil? && params[:show_item_audit] == 'yes') %>        
+      <th class="system_col"><%= link_to 'Created By', {:overwrite_params => {:sort_by => 'created_by', :page => 1, :sort_type => (params[:sort_by] == 'creator_id' && params[:sort_type] == 'asc' ? 'desc' : 'asc')}}, {:title => 'Click to sort'} %></th>
+      <th class="system_col"><%= link_to 'Created', {:overwrite_params => {:sort_by => 'created_at', :page => 1, :sort_type => (params[:sort_by] == 'created_at' && params[:sort_type] == 'asc' ? 'desc' : 'asc')}}, {:title => 'Click to sort'} %></th>
+      <th class="system_col"><%= link_to 'Last Updated By', {:overwrite_params => {:sort_by => 'last_updated_by', :page => 1, :sort_type => (params[:sort_by] == 'last_updated_by' && params[:sort_type] == 'asc' ? 'desc' : 'asc')}}, {:title => 'Click to sort'} %></th>
+      <th class="system_col"><%= link_to 'Updated', {:overwrite_params => {:sort_by => 'updated_at', :page => 1, :sort_type => (params[:sort_by] == 'updated_at' && params[:sort_type] == 'asc' ? 'desc' : 'asc')}}, {:title => 'Click to sort'} %></th>
+    <% end %>
+    <% @selected_data_template.data_template_columns.each do |col| %>
+      <th><%= link_to col.name, {:overwrite_params => {:sort_by => col.sha1_name, :page => 1, :sort_type => (params[:sort_by] == col.sha1_name && params[:sort_type] == 'asc' ? 'desc' : 'asc')}}, {:title => 'Click to sort'} %></th>
+    <% end %>
+  </tr>
+  <% @items.each do |i| %>
+    <tr id="item_id_<%= i.id %>">
+      <% if (has_role?(Role::BUYER.to_sym) || has_role?(Role::ADMIN.to_sym)) && (! params[:show_item_audit].nil? && params[:show_item_audit] == 'yes') %>        
+        <td><%=h i.created_by %><%= i.surrogate_creator_id.nil? ? '' : (' (via ' + i.created_by_sgt + ')') %></td>
+        <td><%=h i.created_at.in_time_zone.strftime("%m/%d/%Y %I:%M%p %Z") %></td>
+        <td><%=h i.last_updated_by %><%= i.surrogate_updater_id.nil? ? '' : (' (via ' + i.last_updated_by_sgt + ')') %></td>
+        <td><%=h i.updated_at.in_time_zone.strftime("%m/%d/%Y %I:%M%p %Z") %></td>
+      <% end %>
+      <% @selected_data_template.data_template_columns.each do |col| %>
+        <td class="hover-highlight">
+          <div id="<%= col.id %>-<%= i.id %>" class="edit">
+            <% (i.send(col.sha1_name) == 'Null') ? '' : i.send(col.sha1_name)  %>
+            <%=
+            # Warning: Ruby Magic
+            # We know that the sql used to generate the items returned columns that match the
+            # names of real data_template_columns ( name, description, price, age, color, etc )
+            # Because of that we know that the @items created from that query will have coresponding
+            # accessor methods created magically.  We can call those methods using ruby's send command.
+            # So below is equivalent to  i.price, i.description, i.name, even though there aren't
+            # price, description, or name columns in the items database table.
+            %>
+          </div>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+  <% if ! @items.nil? %>
+    <div class="digg_pagination">
+      <%= will_paginate @items, :container => false, :params => { :selected_event => {:id => @selected_event.id}, :selected_data_template => {:id => @selected_data_template.id} } %>
+    </div>
+  <% end %>
+
+  <p>
+    <% if ! @selected_event.nil? && ! @selected_event.id.nil? && ! @selected_data_template.nil? && @selected_data_template.data_template_columns.size > 0 && @obj[:items_editable] %>
+      <%= link_to 'Create Item', {:action => "new", :controller => "items", :dt_id => @selected_data_template.id }, :class => "action-button" %>
+    <% end %>     
+  </p>

@@ -1,0 +1,13 @@
+<div id="upload">
+  <div class="prompt">Please select a file to import (MS Excel 97-2003 format):</div>
+  <% form_for(:upload_template_items,  :url => { :controller => 'upload', :action => 'template_item_upload'},  :html => {:multipart => true } ) do |form|  %>
+    <% unless @selected_data_template == nil %>
+      <%= hidden_field_tag 'dt_id', @selected_data_template.id %>
+    <% end%>
+    <%= form.file_field("template_items_file") %>
+    <%= submit_tag("Upload File", :id=>'uploadSubmit') %>
+  <% end %>
+</div>
+<script type="text/javascript">
+  cssdropdown.startchrome("chromemenu")
+</script>   

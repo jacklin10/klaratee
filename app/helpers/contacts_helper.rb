@@ -13,7 +13,7 @@ module ContactsHelper
     if !@selected_data_template.nil? && !@selected_data_template.event.status_open? 
       html << "<div id='warning-box'>Event is not open so you can't add or remove any contacts.</div>"
     end
-    html
+     html.join("").html_safe
   end
   
   # The _contacts_list partial is shared for both current and available contacts.
