@@ -87,9 +87,9 @@ module EventAware
     #     because the import link is only available when an event is open.
     #     If you call this method after updating the event then the supplier will have the correct event data when he needs it. 
  
-    REDIS.keys("selected_event*").each do |key|
-      REDIS.set(key,Marshal.dump(event))
-    end
+    # REDIS.keys("selected_event*").each do |key|
+    #   REDIS.set(key,Marshal.dump(event))
+    # end
     
   end
   

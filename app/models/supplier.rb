@@ -13,7 +13,7 @@ class Supplier < ActiveRecord::Base
     
   has_many :supplier_docs
   has_many :supplier_notes
-  # user_stampable
+  user_stampable
   
   # Validations
   validates_presence_of :company_name

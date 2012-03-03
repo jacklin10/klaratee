@@ -88,6 +88,7 @@ class ItemsController < ApplicationController
   def index
     
     if !@selected_event.nil? && !@selected_data_template.nil?
+      puts "\n *** Stuff selected so do items *****  \n"
       if current_aux_user.invited_to_template?(@selected_data_template.id)
         # Only show the items for the supplier invited to the template  
         sql = Item.generate_items_for_template_supplier(@selected_data_template, current_user, build_order_clause)
@@ -96,7 +97,9 @@ class ItemsController < ApplicationController
         sql = Item.generate_items_for_template( @selected_data_template, build_order_clause)
       end
       
+      puts "Sql: #{sql}"
       @items =  Item.paginate_by_sql( sql, :page => params[:page] ) unless sql.nil?
+      puts "What items do we get: #{@items.size}"
     end
     
     respond_to do |format|

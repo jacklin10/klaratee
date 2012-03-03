@@ -12,6 +12,7 @@ gem 'will_paginate', '~> 2.3.16'
 gem 'i18n'
 gem 'spreadsheet'
 gem 'RedCloth'
+gem 'capistrano'
 
 # If you see: uninitialized constant ActionView::Helpers::JavaScriptElementProxy::ActionView
 # Try to install as a plugin
@@ -25,6 +26,7 @@ gem 'jrails'
 group :development do
   # bundler requires these gems in development
   # gem "rails-footnotes"
+    # gem 'ruby-debug'
 end
 
 group :test do

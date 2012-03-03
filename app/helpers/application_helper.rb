@@ -3,6 +3,7 @@ module ApplicationHelper
   def link_to_delete_modal(obj, obj_name=obj.class.to_s.downcase, msg=nil, modal_height=140)
     html=[]
     html <<  link_to_function('Delete', "generic_modal_confirm_delete(#{obj.id}, '#{obj_name}', '#{msg}', #{modal_height})");
+    html.join("").html_safe
   end
   
   def get_current_company

@@ -18,7 +18,7 @@ module DynamoHelper
       html <<  form_helper.text_field(dynamo_field, :size=>text_field_size)
       html << '</p>'
     end
-    return html
+    html.join("").html_safe
   end
   
   # Helper that returns the names of the dynamo fields.  

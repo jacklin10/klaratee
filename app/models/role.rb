@@ -5,5 +5,5 @@ class Role < ActiveRecord::Base
   BUYER = "Buyer"
   SUPPLIER = "Supplier"
   
-  # user_stampable :stamper_class_name => :user
+  user_stampable :stamper_class_name => :user
 end

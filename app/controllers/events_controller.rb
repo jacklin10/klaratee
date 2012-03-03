@@ -57,20 +57,26 @@ class EventsController < ApplicationController
   # POST /events.xml
   def create
     @event = Event.new(params[:event])
+    @event.start_date = Date.strptime(params[:event][:start_date], '%m/%d/%Y')
+    @event.end_date = Date.strptime(params[:event][:end_date], '%m/%d/%Y')
     @event.status = "open" if params[:event][:status].blank?
+
     respond_to do |format|
       if @event.save
         flash.now[:notice] = 'Event was successfully created.'
-        
         # Use EventAware module to set this event to be currently selected
         force_set_selected_event(@event)
-        
-        Faq.create!({:family_id => @event.id, :user_id=>current_user.id, :visibility=>"public", :text=> "Root FAQ for Event #{@event.id}"})
+        # TODO - busticated
+        # Faq.create!({:family_id => @event.id, :user_id=>current_user.id, :visibility=>"public", :text=> "Root FAQ for Event #{@event.id}"})
         format.html { redirect_to(@event) }
         format.xml  { render :xml => @event, :status => :created, :location => @event }
-        format.json { render :update do |page|                          
-            page << "$('#event-list').replaceWith('" + escape_javascript(render(:partial => "events_table", :locals => { :events => Event.all, :table_id => "event-list" })) +"');" 
-          end }
+
+        format.json { 
+            render :update do |page|                          
+              page << "$('#event-list').replaceWith('" + escape_javascript(render(:partial => "events_table", :locals => { :events => Event.all, :table_id => "event-list" })) +"');" 
+            end 
+        }
+
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
@@ -87,6 +93,8 @@ class EventsController < ApplicationController
     respond_to do |format|
       if @event.update_attributes(params[:event])
         flash.now[:notice] = 'Event was successfully updated.'        
+
+        puts "Event updated: #{@event.inspect}"
         
         # Check for an event status change
         if !params[:event][:status].blank? and @event.status != params[:event][:status]           
@@ -101,7 +109,8 @@ class EventsController < ApplicationController
         end
         
         # The event stored in REDIS will now be out of date. Update it for all users not just the guy logged in!
-        update_event_for_all_users(@event)
+        # Not using redis anymore so this isn't a problem anymore.  See event_aware update_event_for_all_users method
+        # update_event_for_all_users(@event)
         
         format.html { redirect_to events_path }
         format.xml  { head :ok }

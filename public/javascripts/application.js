@@ -23,13 +23,13 @@ function ajax_message_handler(msg, msg_type){
             div_id = 'warning-box'
             break;
         case 'notice':
-		    div_id = 'notice-box'
+        div_id = 'notice-box'
             break;
     }
     
     // Ensures messages don't pile up in cases where you do multiple updates for example.
-	$("#error-box,#warning-box,#notice-box").remove();
-	// Write the message box
+  $("#error-box,#warning-box,#notice-box").remove();
+  // Write the message box
     $("<div id=\"" +div_id + "\">" + msg + "</div>").prependTo($('#messages-container'));
 }
 
@@ -60,14 +60,14 @@ function build_cells(items){
     
     if (items instanceof Array) {
         jQuery.each(items, function(){
-			if (this instanceof Array) {
-				/* id the items array contains elements that are themselves an array, pass the element[1] to wrap 
-				 * this is used to make sure newly created td elements have appropriate id's so edits will show up
-				 * immediately */
-				results += wrap(this[0], 'td', this[1]);
-			} else {
-				results += wrap(this, 'td')
-			}
+      if (this instanceof Array) {
+        /* id the items array contains elements that are themselves an array, pass the element[1] to wrap 
+         * this is used to make sure newly created td elements have appropriate id's so edits will show up
+         * immediately */
+        results += wrap(this[0], 'td', this[1]);
+      } else {
+        results += wrap(this, 'td')
+      }
         });
     }
     else {
@@ -141,24 +141,24 @@ function mass_selector(){
 }
 
 /*
-	A generic way to delete objects.  You can use to delete an event, supplier, etc.
-	It presents a confirm modal window and makes an ajax call to delete the object.
-	Note: Your controller needs to have an ajax ready destroy method.
-	params: obj_id - The id of the object you want to delete
-	        obj_name - The name of the model you would like to delete
-	        heading - This is what will appear at the top of the modal window
+  A generic way to delete objects.  You can use to delete an event, supplier, etc.
+  It presents a confirm modal window and makes an ajax call to delete the object.
+  Note: Your controller needs to have an ajax ready destroy method.
+  params: obj_id - The id of the object you want to delete
+          obj_name - The name of the model you would like to delete
+          heading - This is what will appear at the top of the modal window
 */
 function generic_modal_confirm_delete(obj_id, obj_name, heading, height){
-	  obj_name = obj_name.toLowerCase();
-	
+    obj_name = obj_name.toLowerCase();
+  
     if (heading == null) {
         heading = "Delete";
     }
-	
-	if(height == null) {
-		height = 140;
-	}
-	
+  
+  if(height == null) {
+    height = 140;
+  }
+  
     $("#dialog-confirm").dialog({
         resizable: false,
         height: height,
@@ -202,17 +202,17 @@ function showUploadPopup(){
 
 //centering popup  
 function centerPopup(){
-	//request data for centering  
-	var windowWidth = document.documentElement.clientWidth;
-	var windowHeight = document.documentElement.clientHeight;
-	var popupHeight = $("#uploadPopup").height();
-	var popupWidth = $("#uploadPopup").width();
-	//centering  
-	$("#uploadPopup").css({
-		"position": "absolute",
-		"top": windowHeight / 2 - popupHeight / 2,
-		"left": windowWidth / 2 - popupWidth / 2
-	});	
+  //request data for centering  
+  var windowWidth = document.documentElement.clientWidth;
+  var windowHeight = document.documentElement.clientHeight;
+  var popupHeight = $("#uploadPopup").height();
+  var popupWidth = $("#uploadPopup").width();
+  //centering  
+  $("#uploadPopup").css({
+    "position": "absolute",
+    "top": windowHeight / 2 - popupHeight / 2,
+    "left": windowWidth / 2 - popupWidth / 2
+  }); 
 }  
 /* ------------------------------ */
 
@@ -226,9 +226,9 @@ function centerPopup(){
  *  confirm_msg - What do display in the modal. (i.e Are you sure? )
  */
 function confirmation_modal(form_id, confirm_msg){
-	
-	$('#confirm-msg').html(confirm_msg);
-	
+  
+  $('#confirm-msg').html(confirm_msg);
+  
     $("#dialog-confirm").dialog({
         resizable: true,
         height: 250,
@@ -238,11 +238,11 @@ function confirmation_modal(form_id, confirm_msg){
         buttons: {
             'No': function(){
                 $(this).dialog('close');
-				result=false;
+        result=false;
             },
             'Yes': function(){
                 $(this).dialog('close');
-				$("#"+form_id).trigger('onsubmit');
+        $("#"+form_id).trigger('onsubmit');
             }
         }
     });
@@ -284,7 +284,7 @@ function remove_contact_from_template_modal(template_id, contact_id, heading){
                                 $('#contact_id_' + this.id).remove();
                             });
                         });
-						ajax_message_handler('Contact(s) successfully removed from data template.', 'notice');				
+            ajax_message_handler('Contact(s) successfully removed from data template.', 'notice');        
                     }
                 });
             }
@@ -318,7 +318,7 @@ function template_column_confirm(template_id, template_col_id, heading) {
                         'format': 'json'
                     },
                     success: function(msg){
-						$('#col_' + template_col_id).remove();
+            $('#col_' + template_col_id).remove();
                         ajax_message_handler('Template column deleted successfully', 'notice'); 
                     }
                 });
@@ -331,16 +331,16 @@ function save_template_column(template_column_id, close_modal){
     /* new_data_template_column is the name of the form containing the columns.
      * Its from template_column_dialog.html.erb
      */
-	
-	var niceColType = { 'string_value':'Text', 'text_value':'Large Text', 'int_value':'Numeric', 'decimal_value':'Decimal', 'select_one':'Select One', 'select_many':'Select Many' };
-	
+  
+  var niceColType = { 'string_value':'Text', 'text_value':'Large Text', 'int_value':'Numeric', 'decimal_value':'Decimal', 'select_one':'Select One', 'select_many':'Select Many' };
+  
     if (template_column_id == null) {
         /* Create New */
         $.ajax({
             type: "POST",
             url: "/data_template_columns",
             data: $.param($("#new_data_template_column").serializeArray()) + '&amp;format=json',
-			dataType: "json",
+      dataType: "json",
             success: function(msg){
                 // Update the dom to show the changes
                 box = "<li class='sorter' id='col_" + msg.data_template_column.id + "'>";
@@ -375,11 +375,11 @@ function save_template_column(template_column_id, close_modal){
                     /* If its the first column the li:last won't be able to add the col */
                     $("#sortable").append(box);
                 }
-				ajax_message_handler('Data template column was successfully created.', 'notice');
+        ajax_message_handler('Data template column was successfully created.', 'notice');
             },
-			error: function(xhr, status, error) {
-			     ajax_message_handler(xhr.responseText, 'error'); 
-		    }
+      error: function(xhr, status, error) {
+           ajax_message_handler(xhr.responseText, 'error'); 
+        }
         });
     }
     else {
@@ -389,17 +389,17 @@ function save_template_column(template_column_id, close_modal){
             url: "/data_template_columns/" + template_column_id,
             data: $.param($("#new_data_template_column").serializeArray()) + '&format=json',
             success: function(msg){
-				$("#col_name_" + msg.data_template_column.id).text(msg.data_template_column.name);
-				$("#col_type_" + msg.data_template_column.id).attr('colType', msg.data_template_column.col_type);
-	            $("#col_type_" + msg.data_template_column.id).text(niceColType[msg.data_template_column.col_type]);
-				
+        $("#col_name_" + msg.data_template_column.id).text(msg.data_template_column.name);
+        $("#col_type_" + msg.data_template_column.id).attr('colType', msg.data_template_column.col_type);
+              $("#col_type_" + msg.data_template_column.id).text(niceColType[msg.data_template_column.col_type]);
+        
                 var req = 'Not Required'
                 if (msg.data_template_column.required == 1) {
                     req = 'Required'
                 }
-				
-	            $("#col_required_" + msg.data_template_column.id).text(req);
-				ajax_message_handler('Data template column was successfully updated.', 'notice');
+        
+              $("#col_required_" + msg.data_template_column.id).text(req);
+        ajax_message_handler('Data template column was successfully updated.', 'notice');
             },
             error: function(xhr, status, error) {
                ajax_message_handler(xhr.responseText, 'error'); 
@@ -407,7 +407,7 @@ function save_template_column(template_column_id, close_modal){
         });
     }
     
-	// You may want to leave the modal around and add another one.
+  // You may want to leave the modal around and add another one.
     if (close_modal) {
         $('#template-column-form').dialog('close');
     }
@@ -431,15 +431,15 @@ function template_column_modal(template_column_id, heading, possible_values){
         var val = $('#data_template_column_col_type').val();
         $("#multivalue").hide();
         if (val == 'select_one' || val == 'select_many') {
-			$("#multivalue textarea").val(possible_values)
-			$("#multivalue").show();
+      $("#multivalue textarea").val(possible_values)
+      $("#multivalue").show();
         }
     } else {
-		// Need to do this clear or if you edit a column then add a column the previous values will stick.
+    // Need to do this clear or if you edit a column then add a column the previous values will stick.
         $('#data_template_column_name').val('');
         $('#data_template_column_col_type').val(1);
         $('#data_template_column_required').attr('checked', false);
-	}
+  }
     
     $("#template-column-form").dialog({
         autoOpen: true,
@@ -485,8 +485,8 @@ function template_modal(template_id, heading){
                             var cells = [];
                             cells.push(msg.data_template.name);
                             cells.push(msg.data_template.description);
-														cells.push("&nbsp;"); 
-														cells.push("&nbsp;");
+                            cells.push("&nbsp;"); 
+                            cells.push("&nbsp;");
                             cells.push("<a href='/data_templates/" + msg.data_template.id + "/edit'>View</a>");
                             cells.push("\<a href\=\"#\" onclick\=\"generic_modal_confirm_delete("+msg.data_template.id+",'data_template','"+msg.data_template.name+"')\">Delete</a>");
                             var attr = "id=data_template_id_" + msg.data_template.id;
@@ -495,7 +495,7 @@ function template_modal(template_id, heading){
                             $('#data-template-form').dialog('close');
                             ajax_message_handler('Template was successfully created.', 'notice');
                         },
-     		            error: function(xhr, status, error) {
+                    error: function(xhr, status, error) {
                             $('#data-template-form').dialog('close');
                            ajax_message_handler(xhr.responseText, 'error'); 
                         }
@@ -538,21 +538,21 @@ function template_modal(template_id, heading){
 
 function faq_modal(faq_id, heading, parent_id){
 
-	$("#faq_text").val('');
-	$("#faq_visibility").val('');
-		
-	/* populate the form */
-	$.ajax({
-		type: "GET",
-	    async: false,
-		url: "/faqs/" + faq_id + "/edit?parent_id=" + parent_id,
-		success: function(a){				
-		},
-		error: function(a){				
-		}
-	});    
-	
-	
+  $("#faq_text").val('');
+  $("#faq_visibility").val('');
+    
+  /* populate the form */
+  $.ajax({
+    type: "GET",
+      async: false,
+    url: "/faqs/" + faq_id + "/edit?parent_id=" + parent_id,
+    success: function(a){       
+    },
+    error: function(a){       
+    }
+  });    
+  
+  
     $("#faq-form").dialog({
         autoOpen: true,
         resizable: false,
@@ -570,13 +570,13 @@ function faq_modal(faq_id, heading, parent_id){
                         url: "/faqs",
                         data: $.param($("#new_faq").serializeArray()),
                         success: function(msg){
-    			             ajax_message_handler(heading + ' added.', 'notice');
+                       ajax_message_handler(heading + ' added.', 'notice');
                         },
                         error: function(xhr, status, error) {                            
                            ajax_message_handler(xhr.responseText, 'error'); 
                         }
                     });
-					$('#faq-form').dialog('destroy');
+          $('#faq-form').dialog('destroy');
                 }
                 else {
                     /* Edit Existing */
@@ -585,13 +585,13 @@ function faq_modal(faq_id, heading, parent_id){
                         url: "/faqs/" + faq_id,
                         data: $.param($("#edit_faq_"+faq_id).serializeArray()),
                         success: function(msg){                            
-                             ajax_message_handler('FAQ successfully edited.', 'notice');							 							 
+                             ajax_message_handler('FAQ successfully edited.', 'notice');                             
                         },
                         error: function(xhr, status, error) {
                              ajax_message_handler(xhr.responseText, 'error'); 
                         }
                     });
-				    $('#faq-form').dialog('destroy');
+            $('#faq-form').dialog('destroy');
                 }
             },
             Cancel: function(){
@@ -611,7 +611,7 @@ function event_modal(event_id, heading){
     $("#event_name").attr('value', '');
     $("#event_start_date").attr('value', '');
     $("#event_end_date").attr('value', '');
-	$("#event_status").attr('value', '');
+    $("#event_status").attr('value', '');
     
     if (event_id != null) {
         $.getJSON('events/' + event_id, function(data){
@@ -619,7 +619,7 @@ function event_modal(event_id, heading){
             $("#event_name").attr('value', data.event.name);
             $("#event_start_date").attr('value', data.event.start_date);
             $("#event_end_date").attr('value', data.event.end_date);
-			$("#event_status").attr('value', data.event.status);
+            $("#event_status").attr('value', data.event.status);
         });
     }
     else {
@@ -627,7 +627,7 @@ function event_modal(event_id, heading){
         $("#event_name").attr('value', '');
         $("#event_start_date").attr('value', '');
         $("#event_end_date").attr('value', '');
-		$("#event_status").attr('value', '');
+        $("#event_status").attr('value', '');
     }
     
     /* Build the date pickers. */
@@ -643,7 +643,6 @@ function event_modal(event_id, heading){
         title: heading || "Complete the Form",
         buttons: {
             'Save': function(){
-            
                 if (event_id == null) {
                     /* Create New */
                     $.ajax({
@@ -651,13 +650,13 @@ function event_modal(event_id, heading){
                         url: "/events",
                         data: $.param($("#new_event").serializeArray()) + '&amp;format=json',
                         success: function(msg){
-    			             ajax_message_handler('Event was successfully created.', 'notice');
+                       ajax_message_handler('Event was successfully created.', 'notice');
                         },
                         error: function(xhr, status, error) {                            
                            ajax_message_handler(xhr.responseText, 'error'); 
                         }
                     });
-					$('#dialog-form').dialog('close');
+          $('#dialog-form').dialog('close');
                 }
                 else {
                     /* Edit Existing */
@@ -666,13 +665,13 @@ function event_modal(event_id, heading){
                         url: "/events/" + event_id,
                         data: $.param($("#new_event").serializeArray()) + '&amp;format=json',
                         success: function(msg){                            
-                             ajax_message_handler('Event was successfully updated.', 'notice');							 							 
+                             ajax_message_handler('Event was successfully updated.', 'notice');                            
                         },
                         error: function(xhr, status, error) {
                              ajax_message_handler(xhr.responseText, 'error'); 
                         }
                     });
-				    $('#dialog-form').dialog('close');
+            $('#dialog-form').dialog('close');
                 }
             },
             Cancel: function(){
@@ -696,7 +695,7 @@ function inline_edit_contacts(obj, contact_info){
         method: 'PUT',
         tooltip: 'Click value to edit',
         onblur: 'submit',
-		onerror : function(settings, original, xhr){
+    onerror : function(settings, original, xhr){
            ajax_message_handler(xhr.responseText, 'error'); 
         }
     });
@@ -749,7 +748,7 @@ function inline_edit_items(obj, item_info){
         tooltip: 'Click value to edit',
         onblur: 'submit',
         cssclass:'inline-edit'
-//			style   : 'inherit'
+//      style   : 'inherit'
         // something to think about later... this isn't valid just example
         // callback: function(value, settings) {
         //    $(this).highlightFade({ start: 'yellow', iterator: 'sinusoidal', speed: 3000 });
@@ -776,20 +775,20 @@ $(function(){
 function adjust_page_height(){
     var pageHeight = $(document).height();
     /* Designed to expand for the items screen specifically! */
-	var pageWidth = $('#items-list').width();
+  var pageWidth = $('#items-list').width();
     $("div#main-content").css('height', pageHeight);
 
-	width_key = 886;
-	main_container_expander = 0;
-	if(jQuery.support.cssFloat == false) {
+  width_key = 886;
+  main_container_expander = 0;
+  if(jQuery.support.cssFloat == false) {
         /* IE browsers need the the main_container to expand, non IE this happens automatically. */
-		main_container_expander = 200;
-	}
-	
-	if(pageWidth > width_key) {
+    main_container_expander = 200;
+  }
+  
+  if(pageWidth > width_key) {
      $("div#main-content").css('width', pageWidth);
      $("div#main-container").css('width', pageWidth + main_container_expander);
-	}
+  }
 }
 
 /* Ensure the correct tab style is displayed for the page you are currently on. */
@@ -830,7 +829,7 @@ function tab_manager(){
     $('#event-tab').click(function(){
         window.location = $('#event-tab').attr('url');
     });
-	
+  
     $('#supplierview-tab').click(function(){
         window.location = $('#supplierview-tab').attr('url');
     });

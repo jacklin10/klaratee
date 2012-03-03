@@ -5,6 +5,7 @@ module SupplierViewHelper
       html << "<div class=\"actions\">"
       html <<  link_to_function(link_text, "$(\"\##{toggle_div_id}\").toggle()")
       html << "</div>"
+      html.join("").html_safe
    end
 
    def special_section_heading(heading)
@@ -26,6 +27,7 @@ module SupplierViewHelper
          html << "<div class=\"subtle_msg\">No Contacts</div>"
       end
       html << "</div>"
+      html.join("").html_safe
    end
 
    # xss safe output of a contact field value.
@@ -40,6 +42,7 @@ module SupplierViewHelper
         style << " subtle-text"
       end
       html << "<span id=\"#{field_name}\-#{contact.id}\" class=\"#{style}\">#{val}</span><br>"
+      html.join("").html_safe
    end
 
 end

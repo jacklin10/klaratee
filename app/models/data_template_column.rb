@@ -19,7 +19,7 @@ class DataTemplateColumn < ActiveRecord::Base
   has_many :items, :through => :item_values, :dependent => :destroy
   has_many  :data_template_column_possible_values, :dependent => :destroy
   has_many :item_values, :dependent => :destroy
-  # user_stampable
+  user_stampable
   
   belongs_to :data_template
   

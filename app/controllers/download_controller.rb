@@ -487,17 +487,22 @@ class DownloadController < ApplicationController
     
     output_excel_spreadsheet(book, "Global_Activity_Report_#{file_download_label}")  
   end
-  
+
+  private 
+
   def output_excel_spreadsheet(workbook,filename)
+    
     # http://www.ruby-doc.org/core/classes/IO.html#M002270
     excelStream = StringIO.new
+
     # http://spreadsheet.rubyforge.org/Spreadsheet/Workbook.html
     workbook.write excelStream
+
     # Need to rewind before read to prevent excel data corruption
     #  see: http://rubyforge.org/forum/forum.php?thread_id=29606&forum_id=2920
     excelStream.rewind
-    send_data(excelStream.read, {:filename => filename, :type => 'application/excel'})
+
+    send_data( excelStream.read,  {:filename => filename, :type => "application/excel"})
   end
-  private :output_excel_spreadsheet
-  
+
 end
